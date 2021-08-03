@@ -1,6 +1,9 @@
+package com.cognixia.jump.finalJavaProject.ems;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,7 +16,7 @@ public class EMSRunner {
 
 	public static void main(String[] args) {
 		
-		File file = new File("resources/employees.csv");
+		File file = new File("resources/employees.txt");
 		input = new Scanner(System.in);
 		
 		try {
@@ -22,7 +25,7 @@ public class EMSRunner {
 				System.out.println("Reading initial data from initialData.txt");
 				
 				// Write initial data
-				File init = new File("resources/initialData.txt");
+				String init = "resources/initialData.txt";
 				List<Employee> empList = readFromFile(init);
 				
 				// Write file with updated list
@@ -258,6 +261,24 @@ public class EMSRunner {
 	
 		return empList;
 	}
+	@SuppressWarnings("unchecked")
+	public static List<Employee> readFromFile(String file) {	
+		List<Employee> empList = new ArrayList<Employee>();
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				String[] content = line.split(",");
+				empList.add(new Employee(content[0], content[1], Integer.parseInt(content[2])));
+	        }	
+						
+			br.close();			
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	
+		return empList;
+	}
 	public static void listFromFile(File file, int n) {	
 		
 		try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(file))) {
@@ -294,7 +315,9 @@ public class EMSRunner {
 			switch(f) {
 			case 'n':
 				System.out.println("Please enter a name");
-				String name = input.next();
+				String fName = input.next();
+				String lName = input.next();
+				String name = fName + lName;
 				newEmp.setName(name);
 				break;
 			case 'd':
